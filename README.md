@@ -54,3 +54,8 @@ async def hello(message):
 ### 定时任务
 
 当前定时任务存放于 [wechat/tasks/](wechat/tasks) 目录中，当前使用 [apscheduler](https://apscheduler.readthedocs.io/en/3.x/) 实现，具体使用见文档。
+
+
+### 可优化
+- 添加消息中间件，登录监听隔离
+- 文本编码，发送小表情
