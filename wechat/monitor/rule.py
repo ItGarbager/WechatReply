@@ -10,9 +10,11 @@
 """
 
 import asyncio
+import pprint
 import re
 from typing import Union, Optional, Callable, NoReturn, Awaitable, Tuple, Set
 
+from .logger import logger
 from .typing import T_RuleChecker
 from .utils import run_sync
 from ..config import CMD_SEP, CMD_START
@@ -135,14 +137,17 @@ def full_match(chat_type: Union[str, None], msg: Union[str, Tuple[str, ...]], ig
     :param ignore_case: 是否忽略大小写
     :return:
     """
+    if isinstance(msg, str):
+        msg = (msg,)
 
     async def _full_match(message: "Message") -> bool:
         if not check_type(chat_type, message):
             return False
-        return (message.msg.casefold() if ignore_case else message.msg) == msg
 
-    if isinstance(msg, str):
-        msg = (msg,)
+        for msg_ in msg:
+            if (message.msg.casefold() if ignore_case else message.msg) == msg_:
+                return True
+        return False
 
     return Rule(_full_match)
 
@@ -195,10 +200,11 @@ def command(chat_type: Union[str, None], *cmds: Union[str, Tuple[str, ...]]) -> 
     async def _command(message: "Message") -> bool:
         if not check_type(chat_type, message):
             return False
-
-        for cmd in cmds:
+        now_cmds = sorted(cmds, key=len, reverse=True)
+        for cmd in now_cmds:
             if isinstance(cmd, tuple):
                 cmd = CMD_SEP.join(cmd)
+
             for start in CMD_START:
                 if message.msg.startswith(start + cmd):
                     message.data['command'] = {
@@ -219,7 +225,7 @@ def regex(chat_type: Union[str, None], pattern: str, flags: Union[int, re.RegexF
       可以通过 
         message.data["_matched"] = matched.group()
         message.data["_matched_groups"] = matched.groups()
-        message.data["_matched_dict"] = matched.groupdict(
+        message.data["_matched_dict"] = matched.groupdict()
       获取正则表达式匹配成功的文本。
     :param chat_type: 消息类型，chatroom|person, 不填两者都会监听
     :param pattern: 正则表达式
