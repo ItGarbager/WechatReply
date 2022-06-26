@@ -1,18 +1,18 @@
 import threading
 
-# from apscheduler.schedulers.background import BackgroundScheduler
-
 from web import Application
-from wechat.utils import wx
+from wechat.monitor.logger import logger
+from wechat.monitor.plugins import load_plugins
+from wechat.tasks.schedulers import scheduler
+from wechat import WX
 
 
 def main():
-    app = Application()
-    # scheduler = BackgroundScheduler()
-    # scheduler.add_job(do, 'cron', hour='7-8', minute='1', args=['xxxxx@chatroom'])
-    # objs = [wx, scheduler, app]
+    app = Application(logger=logger)
 
-    objs = [wx, app]
+    # 加载微信机器人插件
+    load_plugins('wechat/plugins')
+    objs = [WX(), app, scheduler]
     for obj in objs:
         _ = threading.Thread(target=obj.start, args=tuple())
         _.start()
