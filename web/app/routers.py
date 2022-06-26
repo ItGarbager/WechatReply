@@ -3,8 +3,8 @@
 from flask import Blueprint
 
 # 使用蓝图创建一个app对象 url_prefix 为设置url前缀
-from web.app.views import send_text_msg, get_info
+from web.app.views import send_text_msg, GetInfo
 
 wechat_app = Blueprint('wechat_app', __name__, url_prefix='/wechat')
 wechat_app.add_url_rule('/message/to', None, send_text_msg, methods=['POST'])
-wechat_app.add_url_rule('/friends/<friend_type>', None, get_info, methods=['GET'])
+wechat_app.add_url_rule('/friends/<friend_type>', None, GetInfo.as_view("get_info"), methods=['GET', 'POST'])
