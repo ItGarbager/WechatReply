@@ -12,6 +12,7 @@ def main():
 
     # 加载微信机器人插件
     load_plugins('wechat/plugins')
+
     objs = [WX(), app, scheduler]
     for obj in objs:
         _ = threading.Thread(target=obj.start, args=tuple())

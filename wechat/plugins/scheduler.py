@@ -4,8 +4,10 @@ from wechat import Message
 from wechat.monitor.plugins import on_command
 from wechat.tasks.schedulers import add_task
 
+# 命令类型的时间响应器
 schedule = on_command(cmd='添加定时', aliases={'添加任务', '添加定时任务'})
 
+# 任务映射表
 task_map_dict = {
     '发送文本消息': 'send_text',
     'send_text': 'send_text'
