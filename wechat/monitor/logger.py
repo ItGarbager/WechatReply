@@ -8,8 +8,8 @@ FrontMatter:
     description: wechat_bot.log 模块
 """
 
-import sys
 import logging
+import sys
 from typing import TYPE_CHECKING, Union
 
 import loguru
@@ -18,7 +18,6 @@ if TYPE_CHECKING:
     # avoid sphinx autodoc resolve annotation failed
     # because loguru module do not have `Logger` class actually
     from loguru import Logger
-
 
 # logger = logging.getLogger("wechat_bot")
 logger: "Logger" = loguru.logger
@@ -46,7 +45,7 @@ class Filter:
 
     def __call__(self, record):
         module_name: str = record["name"]
-        # TODO: get plugin name instead of module name
+        # get plugin name instead of module name
         # module = sys.modules.get(module_name)
         # if module and hasattr(module, "__plugin__"):
         #     plugin: "Plugin" = getattr(module, "__plugin__")

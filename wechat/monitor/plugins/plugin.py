@@ -3,15 +3,13 @@ FrontMatter:
     sidebar_position: 3
     description: wechat_bot.plugin.plugin 模块
 """
-from types import ModuleType
 from dataclasses import field, dataclass
+from types import ModuleType
 from typing import TYPE_CHECKING, Any, Set, Dict, Type, Optional
 
 from pydantic import BaseModel
 
 from ..matcher import Matcher
-
-from . import _plugins as plugins  # FIXME: backport for nonebug
 
 if TYPE_CHECKING:
     from .manager import PluginManager
