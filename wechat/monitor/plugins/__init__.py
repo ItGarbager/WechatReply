@@ -100,12 +100,13 @@ def get_available_plugin_names() -> Set[str]:
 
 from .on import on as on
 from .manager import PluginManager
-from .on import on_regex as on_regex
 from .plugin import Plugin as Plugin
+from .on import on_regex as on_regex
 from .on import on_command as on_command
 from .on import on_keyword as on_keyword
 from .on import on_message as on_message
 from .on import on_endswith as on_endswith
+from .on import on_full_match as on_full_match
 from .load import load_plugin as load_plugin
 from .load import load_plugins as load_plugins
 from .on import on_startswith as on_startswith
