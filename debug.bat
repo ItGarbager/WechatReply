@@ -10,7 +10,6 @@ if "%1"=="start" (
     )
 ) else (
     if "%1"=="" (
-        echo sss
         start python web_manager.py
         start python monitor_manager.py
     )
