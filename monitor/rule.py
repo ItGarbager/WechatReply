@@ -10,14 +10,12 @@
 """
 
 import asyncio
-import pprint
 import re
 from typing import Union, Optional, Callable, NoReturn, Awaitable, Tuple, Set
 
-from .logger import logger
 from .typing import T_RuleChecker
 from .utils import run_sync
-from ..config import CMD_SEP, CMD_START
+from .config import CMD_SEP, CMD_START
 
 
 class Rule:

@@ -1,4 +1,4 @@
-from wechat.monitor.plugins import on_full_match  # 先导入一个响应器
+from monitor.plugins import on_full_match  # 先导入一个响应器
 
 # 全文匹配响应器， priority 越低优先级越高, block 是否阻断向低优先级传递, 默认为 True
 test = on_full_match(msg=('sss', 'bbb'), priority=2, block=False)

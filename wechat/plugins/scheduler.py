@@ -1,7 +1,7 @@
 from re import split
 
 from wechat import Message
-from wechat.monitor.plugins import on_command
+from monitor.plugins import on_command
 from wechat.tasks.schedulers import add_task
 
 # 命令类型的时间响应器
@@ -30,7 +30,7 @@ async def _(message: Message):
                     message.wx.send_text(friend, '定时任务添加成功')
                     if send_friend == '-':
                         send_friend = friend
-                    add_task(task_map_dict[call], hour, minute, *(send_friend, msg))
+                    add_task(task_map_dict[call], hour, minute, *(message.wx, send_friend, msg))
                 else:
                     message.wx.send_text(friend, '时间格式异常')
             else:

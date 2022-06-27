@@ -3,8 +3,8 @@ from collections import defaultdict
 from contextvars import ContextVar
 from typing import Type, List, Dict, Union, Callable, Optional
 
-from ..monitor.exception import StopPropagation, FinishedException
-from ..monitor.logger import logger
+from monitor.exception import StopPropagation, FinishedException
+from monitor.logger import logger
 from .rule import Rule
 from .typing import T_Handler
 

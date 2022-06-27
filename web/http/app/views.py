@@ -2,7 +2,7 @@ import json
 
 from flask import views, request, Response, stream_with_context
 
-from web.utils import global_response
+from web.http.utils import global_response
 from wechat import WXFriend, WX
 
 

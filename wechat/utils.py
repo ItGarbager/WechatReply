@@ -31,9 +31,10 @@ def get_friends(message, WXFriend):
                 getattr(WXFriend, friend_type)[_id] = {'name': _name, 'type': friend_type,
                                                        'remark_name': remark_name}
         else:
-            chat_type = msg_type.rsplit('::', 1)[-1]
-            group = data.get('from_chatroom_wxid')
-            user = data.get('from_member_wxid', data.get('from_wxid'))
-            msg = data.get('msg')
 
-            return data, chat_type, group, user, msg
+            msg = data.get('msg')
+            if msg and len(msg) <= 1000:
+                chat_type = msg_type.rsplit('::', 1)[-1]
+                group = data.get('from_chatroom_wxid')
+                user = data.get('from_member_wxid', data.get('from_wxid'))
+                return data, chat_type, group, user, msg

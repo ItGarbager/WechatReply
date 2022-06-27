@@ -1,8 +1,8 @@
 import threading
 
-from web import Application
-from wechat.monitor.logger import logger
-from wechat.monitor.plugins import load_plugins
+from web.http import Application
+from monitor.logger import logger
+from monitor.plugins import load_plugins
 from wechat.tasks.schedulers import scheduler
 from wechat import WX
 
