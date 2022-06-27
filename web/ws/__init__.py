@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import asyncio
-from collections.abc import AsyncIterable
-from typing import Set
 
 import tornado.ioloop
 import tornado.options
@@ -11,10 +9,6 @@ import tornado.websocket
 from tornado.options import options
 
 from web.ws.socket import UpdateWebSocket
-
-
-class Users(AsyncIterable, Set):
-    pass
 
 
 class WSApplication(tornado.web.Application):
