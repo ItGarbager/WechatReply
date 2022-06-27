@@ -1,16 +1,17 @@
 import threading
 
-from web.http import Application
 from monitor.logger import logger
-from monitor.plugins import load_plugins
-from wechat.tasks.schedulers import scheduler
+from monitor.plugin import load_plugins, load_builtin_plugin
+from web.http import Application
 from wechat import WX
+from wechat.tasks.schedulers import scheduler
 
 
 def main():
     app = Application(logger=logger)
-
-    # 加载微信机器人插件
+    # 加载内置插件 ping
+    load_builtin_plugin('echo')
+    # 加载自定义微信机器人插件
     load_plugins('wechat/plugins')
 
     objs = [WX(), app, scheduler]

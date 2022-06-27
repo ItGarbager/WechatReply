@@ -7,7 +7,7 @@ from websocket import create_connection
 
 from monitor.logger import logger
 from monitor.message import handle_event
-from monitor.plugins import load_plugins
+from monitor.plugin import load_plugins, load_builtin_plugin
 from wechat import Message
 from wechat.tasks.schedulers import scheduler
 
@@ -70,6 +70,7 @@ class Client:
 
 
 if __name__ == '__main__':
+    load_builtin_plugin('echo')
     load_plugins('wechat/plugins')
     client = Client('ws://127.0.0.1:3000')
     objs = [client, scheduler]
