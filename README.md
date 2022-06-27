@@ -17,6 +17,21 @@
 - 已封装简单的 web 服务，支持接口调用
 - 对功能及定时任务进行插件化处理
     - 插件的自行注册已实现，使用时仅需要关注业务逻辑即可
+### 启动及关闭服务
+#### 服务启动
+1. 执行微信与监听服务不进行分离的版本
+> python one_click_manager.py
+2. 执行微信与监听服务进行分离的版本
+- 一键全部启动
+> .\debug.bat 或者 .\debug.bat start
+- 启动单个服务
+> .\debug.bat start monitor (监听服务) 或者 .\debug.bat start web (微信以及web服务)
+#### 服务关闭
+- 关闭所有服务
+> .\debug.bat stop
+- 关闭单个服务
+> .\debug.bat stop python 或者 .\debug.bat stop wechat
+
 
 ### 插件
 
