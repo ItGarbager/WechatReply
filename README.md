@@ -27,6 +27,7 @@
 - 启动单个服务
 > .\debug.bat start monitor (监听服务) 或者 .\debug.bat start web (微信以及web服务)
 #### 服务关闭
+关闭就直接杀的 python 和 wechat 的服务，若存在其他 python 应用请勿使用
 - 关闭所有服务
 > .\debug.bat stop
 - 关闭单个服务
