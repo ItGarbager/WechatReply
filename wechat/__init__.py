@@ -55,7 +55,7 @@ def local_on_message(message):
             # 判断为收取消息并时间大于启动时间才会进行回复
             if send_or_recv and data.get('time') >= START_TIME:
                 logger.info('message: %s' % message)
-                # 异步启动当前注册的事件响应器，插件目录 wechat/plugins/
+                # 异步启动当前注册的事件响应器，插件目录 wechat/plugin/
                 asyncio.run(handle_event(Message(data, chat_type, group, user, msg, WX())))
 
     except Exception:

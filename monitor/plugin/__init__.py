@@ -1,31 +1,31 @@
 """本模块为 WechatBot 插件开发提供便携的定义函数。
 ## 快捷导入
 为方便使用，本模块从子模块导入了部分内容，以下内容可以直接通过本模块导入:
-- `monitor` => {ref}``monitor` <wechat_bot.plugin.monitor.monitor>`
-- `on_metaevent` => {ref}``on_metaevent` <wechat_bot.plugin.monitor.on_metaevent>`
-- `on_message` => {ref}``on_message` <wechat_bot.plugin.monitor.on_message>`
-- `on_notice` => {ref}``on_notice` <wechat_bot.plugin.monitor.on_notice>`
-- `on_request` => {ref}``on_request` <wechat_bot.plugin.monitor.on_request>`
-- `on_startswith` => {ref}``on_startswith` <wechat_bot.plugin.monitor.on_startswith>`
-- `on_endswith` => {ref}``on_endswith` <wechat_bot.plugin.monitor.on_endswith>`
-- `on_fullmatch` => {ref}``on_fullmatch` <wechat_bot.plugin.monitor.on_fullmatch>`
-- `on_keyword` => {ref}``on_keyword` <wechat_bot.plugin.monitor.on_keyword>`
-- `on_command` => {ref}``on_command` <wechat_bot.plugin.monitor.on_command>`
-- `on_shell_command` => {ref}``on_shell_command` <wechat_bot.plugin.monitor.on_shell_command>`
-- `on_regex` => {ref}``on_regex` <wechat_bot.plugin.monitor.on_regex>`
-- `CommandGroup` => {ref}``CommandGroup` <wechat_bot.plugin.monitor.CommandGroup>`
-- `Matchergroup` => {ref}``MatcherGroup` <wechat_bot.plugin.monitor.MatcherGroup>`
-- `load_plugin` => {ref}``load_plugin` <wechat_bot.plugin.load.load_plugin>`
-- `load_plugins` => {ref}``load_plugins` <wechat_bot.plugin.load.load_plugins>`
-- `load_all_plugins` => {ref}``load_all_plugins` <wechat_bot.plugin.load.load_all_plugins>`
-- `load_from_json` => {ref}``load_from_json` <wechat_bot.plugin.load.load_from_json>`
-- `load_from_toml` => {ref}``load_from_toml` <wechat_bot.plugin.load.load_from_toml>`
-- `load_builtin_plugin` => {ref}``load_builtin_plugin` <wechat_bot.plugin.load.load_builtin_plugin>`
-- `load_builtin_plugins` => {ref}``load_builtin_plugins` <wechat_bot.plugin.load.load_builtin_plugins>`
-- `get_plugin` => {ref}``get_plugin` <wechat_bot.plugin.plugin.get_plugin>`
-- `get_loaded_plugins` => {ref}``get_loaded_plugins` <wechat_bot.plugin.plugin.get_loaded_plugins>`
-- `export` => {ref}``export` <wechat_bot.plugin.export.export>`
-- `require` => {ref}``require` <wechat_bot.plugin.load.require>`
+- `monitor` => {ref}``monitor` <monitor.plugin.monitor.monitor>`
+- `on_metaevent` => {ref}``on_metaevent` <monitor.plugin.monitor.on_metaevent>`
+- `on_message` => {ref}``on_message` <monitor.plugin.monitor.on_message>`
+- `on_notice` => {ref}``on_notice` <monitor.plugin.monitor.on_notice>`
+- `on_request` => {ref}``on_request` <monitor.plugin.monitor.on_request>`
+- `on_startswith` => {ref}``on_startswith` <monitor.plugin.monitor.on_startswith>`
+- `on_endswith` => {ref}``on_endswith` <monitor.plugin.monitor.on_endswith>`
+- `on_fullmatch` => {ref}``on_fullmatch` <monitor.plugin.monitor.on_fullmatch>`
+- `on_keyword` => {ref}``on_keyword` <monitor.plugin.monitor.on_keyword>`
+- `on_command` => {ref}``on_command` <monitor.plugin.monitor.on_command>`
+- `on_shell_command` => {ref}``on_shell_command` <monitor.plugin.monitor.on_shell_command>`
+- `on_regex` => {ref}``on_regex` <monitor.plugin.monitor.on_regex>`
+- `CommandGroup` => {ref}``CommandGroup` <monitor.plugin.monitor.CommandGroup>`
+- `Matchergroup` => {ref}``MatcherGroup` <monitor.plugin.monitor.MatcherGroup>`
+- `load_plugin` => {ref}``load_plugin` <monitor.plugin.load.load_plugin>`
+- `load_plugins` => {ref}``load_plugins` <monitor.plugin.load.load_plugins>`
+- `load_all_plugins` => {ref}``load_all_plugins` <monitor.plugin.load.load_all_plugins>`
+- `load_from_json` => {ref}``load_from_json` <monitor.plugin.load.load_from_json>`
+- `load_from_toml` => {ref}``load_from_toml` <monitor.plugin.load.load_from_toml>`
+- `load_builtin_plugin` => {ref}``load_builtin_plugin` <monitor.plugin.load.load_builtin_plugin>`
+- `load_builtin_plugins` => {ref}``load_builtin_plugins` <monitor.plugin.load.load_builtin_plugins>`
+- `get_plugin` => {ref}``get_plugin` <monitor.plugin.plugin.get_plugin>`
+- `get_loaded_plugins` => {ref}``get_loaded_plugins` <monitor.plugin.plugin.get_loaded_plugins>`
+- `export` => {ref}``export` <monitor.plugin.export.export>`
+- `require` => {ref}``require` <monitor.plugin.load.require>`
 FrontMatter:
     sidebar_position: 0
     description: wechat_bot.plugin 模块
@@ -68,7 +68,7 @@ def get_plugin(name: str) -> Optional["Plugin"]:
     """获取已经导入的某个插件。
     如果为 `load_plugins` 文件夹导入的插件，则为文件(夹)名。
     参数:
-        name: 插件名，即 {ref}`wechat_bot.plugin.plugin.Plugin.name`。
+        name: 插件名，即 {ref}`monitor.plugin.plugin.Plugin.name`。
     """
     return _plugins.get(name)
 
@@ -77,7 +77,7 @@ def get_plugin_by_module_name(module_name: str) -> Optional["Plugin"]:
     """通过模块名获取已经导入的某个插件。
     如果提供的模块名为某个插件的子模块，同样会返回该插件。
     参数:
-        module_name: 模块名，即 {ref}`wechat_bot.plugin.plugin.Plugin.module_name`。
+        module_name: 模块名，即 {ref}`monitor.plugin.plugin.Plugin.module_name`。
     """
     splits = module_name.split(".")
     loaded = {plugin.module_name: plugin for plugin in _plugins.values()}

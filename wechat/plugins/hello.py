@@ -1,4 +1,4 @@
-from monitor.plugins.on import on_keyword
+from monitor.plugin.on import on_keyword
 from wechat import Message
 
 # priority 为优先级，数值越低优先级越高，block 是否阻断消息继续传递，默认 True，为 False 时还需继续传递至下一层事件处理

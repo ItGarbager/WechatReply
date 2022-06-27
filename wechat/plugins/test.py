@@ -1,6 +1,6 @@
 import pprint
 
-from monitor.plugins import on_regex, on_full_match
+from monitor.plugin import on_regex, on_full_match
 
 test = on_regex(pattern=r'(.+)天气(.+)差')
 

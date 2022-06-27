@@ -1,4 +1,4 @@
-from monitor.plugins import on_command
+from monitor.plugin import on_command
 
 _help = on_command(cmd='菜单', aliases={'功能', '帮助'})
 

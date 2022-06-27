@@ -1,7 +1,7 @@
 """本模块定义插件对象。
 FrontMatter:
     sidebar_position: 3
-    description: wechat_bot.plugin.plugin 模块
+    description: monitor.plugin.plugin 模块
 """
 from dataclasses import field, dataclass
 from types import ModuleType

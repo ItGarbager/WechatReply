@@ -2,7 +2,7 @@
 参考: [import hooks](https://docs.python.org/3/reference/import.html#import-hooks), [PEP302](https://www.python.org/dev/peps/pep-0302/)
 FrontMatter:
     sidebar_position: 5
-    description: wechat_bot.plugin.manager 模块
+    description: monitor.plugin.manager 模块
 """
 import importlib
 import pkgutil
@@ -29,7 +29,7 @@ from ..utils import escape_tag
 class PluginManager:
     """插件管理器。
     参数:
-        plugins: 独立插件模块名集合。
+        plugin: 独立插件模块名集合。
         search_path: 插件搜索路径（文件夹）。
     """
 
@@ -42,7 +42,7 @@ class PluginManager:
         self.plugins: Set[str] = set(plugins or [])
         self.search_path: Set[str] = set(search_path or [])
 
-        # cache plugins
+        # cache plugin
         self._third_party_plugin_names: Dict[str, str] = {}
         self._searched_plugin_names: Dict[str, Path] = {}
         self.prepare_plugins()
@@ -83,12 +83,12 @@ class PluginManager:
     def prepare_plugins(self) -> Set[str]:
         """搜索插件并缓存插件名称。"""
 
-        # get all previous ready to load plugins
+        # get all previous ready to load plugin
         previous_plugins = self._previous_plugins()
         searched_plugins: Dict[str, Path] = {}
         third_party_plugins: Dict[str, str] = {}
 
-        # check third party plugins
+        # check third party plugin
         for plugin in self.plugins:
             name = _module_name_to_plugin_name(plugin)
             if name in third_party_plugins or name in previous_plugins:
@@ -99,7 +99,7 @@ class PluginManager:
 
         self._third_party_plugin_names = third_party_plugins
 
-        # check plugins in search path
+        # check plugin in search path
         for module_info in pkgutil.iter_modules(self.search_path):
             # ignore if startswith "_"
             if module_info.name.startswith("_"):

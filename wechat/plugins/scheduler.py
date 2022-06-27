@@ -1,7 +1,7 @@
 from re import split
 
 from wechat import Message
-from monitor.plugins import on_command
+from monitor.plugin import on_command
 from wechat.tasks.schedulers import add_task
 
 # 命令类型的时间响应器

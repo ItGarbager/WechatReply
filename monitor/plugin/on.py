@@ -1,7 +1,7 @@
 """本模块定义事件响应器便携定义函数。
 FrontMatter:
     sidebar_position: 2
-    description: wechat_bot.plugin.monitor 模块
+    description: monitor.plugin.monitor 模块
 """
 import inspect
 import re

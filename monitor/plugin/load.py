@@ -1,7 +1,7 @@
 """本模块定义插件加载接口。
 FrontMatter:
     sidebar_position: 1
-    description: wechat_bot.plugin.load 模块
+    description: monitor.plugin.load 模块
 """
 import json
 from typing import Set, Iterable, Optional
@@ -47,26 +47,26 @@ def load_all_plugins(
 
 
 def load_from_json(file_path: str, encoding: str = "utf-8") -> Set[Plugin]:
-    """导入指定 json 文件中的 `plugins` 以及 `plugin_dirs` 下多个插件，以 `_` 开头的插件不会被导入!
+    """导入指定 json 文件中的 `plugin` 以及 `plugin_dirs` 下多个插件，以 `_` 开头的插件不会被导入!
     参数:
         file_path: 指定 json 文件路径
         encoding: 指定 json 文件编码
     用法:
-        ```json title=plugins.json
+        ```json title=plugin.json
         {
-            "plugins": ["some_plugin"],
+            "plugin": ["some_plugin"],
             "plugin_dirs": ["some_dir"]
         }
         ```
         ```python
-        wechat_bot.load_from_json("plugins.json")
+        wechat_bot.load_from_json("plugin.json")
         ```
     """
     with open(file_path, "r", encoding=encoding) as f:
         data = json.load(f)
-    plugins = data.get("plugins")
+    plugins = data.get("plugin")
     plugin_dirs = data.get("plugin_dirs")
-    assert isinstance(plugins, list), "plugins must be a list of plugin name"
+    assert isinstance(plugins, list), "plugin must be a list of plugin name"
     assert isinstance(plugin_dirs, list), "plugin_dirs must be a list of directories"
     return load_all_plugins(set(plugins), set(plugin_dirs))
 
@@ -76,15 +76,15 @@ def load_builtin_plugin(name: str) -> Optional[Plugin]:
     参数:
         name: 插件名称
     """
-    return load_plugin(f"wechat_bot.plugins.{name}")
+    return load_plugin(f"monitor.plugins.{name}")
 
 
 def load_builtin_plugins(*plugins: str) -> Set[Plugin]:
     """导入多个 WechatBot 内置插件。
     参数:
-        plugins: 插件名称列表
+        plugin: 插件名称列表
     """
-    return load_all_plugins([f"wechat_bot.plugins.{p}" for p in plugins], [])
+    return load_all_plugins([f"monitor.plugins.{p}" for p in plugins], [])
 
 
 def _find_manager_by_name(name: str) -> Optional[PluginManager]:
