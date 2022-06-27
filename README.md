@@ -1,6 +1,6 @@
 # WechatReply
 
-利用 WechatPCAPI 实现的微信自动回复
+利用 WechatPCAPI 实现的微信自动回复机器人
 
 ## 需要配合 [WeChatPCAPI](https://github.com/Manfiel/WechatPCAPI) 来实现
 
