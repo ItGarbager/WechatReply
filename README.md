@@ -10,7 +10,7 @@
 - python3.7.4 64位
 - 安装 WeChatPCAPI 中的 [Wechat-V2.7.1.82.exe](https://github.com/Manfiel/WechatPCAPI/tree/master/src/Wechat-V2.7.1.82.exe)
   版本
-    - 如果已完成微信需要覆盖安装
+    - 如果已安装新版微信需要覆盖安装
 
 ### 相关功能
 
