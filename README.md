@@ -30,26 +30,27 @@ pip install -r requirements.txt
 > python one_click_manager.py
 2. 执行微信与监听服务进行分离的版本
 - 一键全部启动
-> .\debug.bat 或者 .\debug.bat start
+> .\debug.bat 或者 .\debug.bat startup
 - 启动单个服务
-> .\debug.bat start monitor (监听服务) 或者 .\debug.bat start web (微信以及web服务)
+> .\debug.bat startup monitor (监听服务) 或者 .\debug.bat startup web (微信以及web服务)
 #### 服务关闭
 关闭就直接杀的 python 和 wechat 的服务，若存在其他 python 应用请勿使用
 - 关闭所有服务
-> .\debug.bat stop
+> .\debug.bat shutdown
 - 关闭单个服务
-> .\debug.bat stop python 或者 .\debug.bat stop wechat
+> .\debug.bat shutdown python 或者 .\debug.bat shutdown wechat
 
 
 ### 插件
+默认自定义插件目录 [wechat/plugins](wechat/plugins)
 
-当前 wechat 包中已经实现了插件自行注册，我们可以自行扩展插件
+当前 monitor 包中已经实现了插件自行注册，我们可以自行扩展插件
 
 示例：
 
 ```python
-# wechat/plugins/hello.py
-from wechat.monitor.plugins.on import on_keyword  # 导入关键词类型事件响应器
+# wechat/plugin/hello.py
+from monitor.plugin.on import on_keyword  # 导入关键词类型事件响应器
 
 """
 on_keyword 功能，匹配消息关键词
@@ -72,11 +73,10 @@ async def hello(message):
 
 以上插件我们编写完毕后，存入插件目录，服务会在启动时自行加载
 
-默认插件目录 [wechat/plugins/](wechat/tasks)
 
 ### 定时任务
 
-当前定时任务存放于 [wechat/tasks/](wechat/tasks) 目录中，当前使用 [apscheduler](https://apscheduler.readthedocs.io/en/3.x/) 实现，具体使用见文档。
+当前定时任务存放于 [wechat/tasks](wechat/tasks) 目录中，当前使用 [apscheduler](https://apscheduler.readthedocs.io/en/3.x/) 实现，具体使用见文档。
 
 
 ### 可优化
