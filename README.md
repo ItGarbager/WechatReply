@@ -66,9 +66,13 @@ hello = on_keyword(keywords={'hello', '你好', '早'}, priority=2, block=True)
 @hello.handle()
 async def hello(message):
     if message.group:
-        message.wx.send_text(message.group, '你好')
+        # 两种回复方式 handle.finish 发送后直接结束当前响应器
+        await message.wx.send_text(message.group, '你好')
+        # await hello.finish('你好')
     else:
-        message.wx.send_text(message.user, 'hello')
+        # message.wx.send_text(message.user, 'hello')
+        await hello.finish('hello')
+
 ```
 
 以上插件我们编写完毕后，存入插件目录，服务会在启动时自行加载
