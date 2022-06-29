@@ -11,14 +11,18 @@
 
 import asyncio
 import re
-from typing import Union, Optional, Callable, NoReturn, Awaitable, Tuple, Set, TYPE_CHECKING
+from itertools import product
+from typing import Union, Optional, Callable, NoReturn, Awaitable, Tuple, Set, TYPE_CHECKING, Any, Dict
+
+from pygtrie import CharTrie
 
 from .config import CMD_SEP, CMD_START
+from .logger import logger
 from .typing import T_RuleChecker, T_State
 from .utils import run_sync
 
 if TYPE_CHECKING:
-    from .classes import Message
+    from classes import Message
 
 
 class Rule:
@@ -86,6 +90,68 @@ class Rule:
 
     def __or__(self, other) -> NoReturn:
         raise RuntimeError("Or operation between rules is not allowed.")
+
+
+class TrieRule:
+    prefix: CharTrie = CharTrie()
+    suffix: CharTrie = CharTrie()
+
+    @classmethod
+    def add_prefix(cls, prefix: str, value: Any):
+        if prefix in cls.prefix:
+            logger.warning(f'Duplicated prefix rule "{prefix}"')
+            return
+        cls.prefix[prefix] = value
+
+    @classmethod
+    def add_suffix(cls, suffix: str, value: Any):
+        if suffix[::-1] in cls.suffix:
+            logger.warning(f'Duplicated suffix rule "{suffix}"')
+            return
+        cls.suffix[suffix[::-1]] = value
+
+    @classmethod
+    def get_value(cls, message: "Message",
+                  state: T_State) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+
+        prefix = None
+        suffix = None
+        message = message.get_message()
+
+        if isinstance(message, str):
+            prefix = cls.prefix.longest_prefix(str(message).lstrip())
+
+        if isinstance(message, str):
+            suffix = cls.suffix.longest_prefix(
+                str(message).rstrip()[::-1])
+        state["_prefix"] = {
+            "raw_command": prefix.key,
+            "command": prefix.value
+        } if prefix else {
+            "raw_command": None,
+            "command": None
+        }
+        state["_suffix"] = {
+            "raw_command": suffix.key,
+            "command": suffix.value
+        } if suffix else {
+            "raw_command": None,
+            "command": None
+        }
+
+        return ({
+                    "raw_command": prefix.key,
+                    "command": prefix.value
+                } if prefix else {
+            "raw_command": None,
+            "command": None
+        }, {
+                    "raw_command": suffix.key,
+                    "command": suffix.value
+                } if suffix else {
+            "raw_command": None,
+            "command": None
+        })
 
 
 def check_type(chat_type, message):
@@ -195,26 +261,26 @@ def command(chat_type: Union[str, None], *cmds: Union[str, Tuple[str, ...]]) -> 
     :::
     :param chat_type: 消息类型，chatroom|person, 不填两者都会监听
     :param cmds: 命令文本或命令元组
-    :return: 
+    :return:
     """
+
+    commands = list(cmds)
+    for index, command in enumerate(commands):
+        if isinstance(command, str):
+            commands[index] = command = (command,)
+
+        if len(command) == 1:
+            for start in CMD_START:
+                TrieRule.add_prefix(f"{start}{command[0]}", command)
+        else:
+            for start, sep in product(CMD_START, CMD_SEP):
+                TrieRule.add_prefix(f"{start}{sep.join(command)}", command)
 
     async def _command(message: "Message", state: T_State) -> bool:
         if not check_type(chat_type, message):
             return False
-        now_cmds = sorted(cmds, key=len, reverse=True)
-        for cmd in now_cmds:
-            if isinstance(cmd, tuple):
-                cmd = CMD_SEP.join(cmd)
 
-            for start in CMD_START:
-                if message.msg.startswith(start + cmd):
-                    message.data['command'] = {
-                        'prefix': start + cmd,
-                        'others': re.split(r' ', message.msg[len(start + cmd):].strip())
-                    }
-                    return True
-
-        return False
+        return state["_prefix"]["command"] in commands
 
     return Rule(_command)
 

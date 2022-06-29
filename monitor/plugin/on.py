@@ -6,7 +6,7 @@ FrontMatter:
 import inspect
 import re
 from types import ModuleType
-from typing import Set, List, Type, Tuple, Union, Optional
+from typing import Set, List, Type, Tuple, Union, Optional, TYPE_CHECKING
 
 from .manager import _current_plugin
 from ..dependencies import Dependent
@@ -21,6 +21,9 @@ from ..rule import (
     full_match,
 )
 from ..typing import T_Handler, T_RuleChecker, T_State, T_StateFactory
+
+if TYPE_CHECKING:
+    from classes import Message
 
 
 def _store_matcher(matcher: Type[Matcher]) -> None:
@@ -256,10 +259,21 @@ def on_command(
         Type[Matcher]
     """
 
+    async def _strip_cmd(message: "Message", state: T_State):
+        message = message.get_message()
+        segment = message.pop(0)
+        new_message = message.__class__(
+            str(segment).lstrip()
+            [len(state["_prefix"]["raw_command"]):].lstrip())  # type: ignore
+        for new_segment in reversed(new_message):
+            message.insert(0, new_segment)
+
+    handlers = kwargs.pop("handlers", [])
+    handlers.insert(0, _strip_cmd)
+
     commands = set([cmd]) | (aliases or set())
-    block = kwargs.pop("block", False)
     return on_message(
-        command(chat_type, *commands) & rule, block=block, **kwargs, _depth=_depth + 1
+        command(chat_type, *commands) & rule, **kwargs, _depth=_depth + 1
     )
 
 

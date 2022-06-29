@@ -65,7 +65,7 @@ class PausedException(MonitorException):
     """
     :说明:
 
-      指示 NoneBot 结束当前 ``Handler`` 并等待下一条消息后继续下一个 ``Handler``。
+      指示 Monitor 结束当前 ``Handler`` 并等待下一条消息后继续下一个 ``Handler``。
       可用于用户输入新信息。
 
     :用法:
@@ -79,7 +79,7 @@ class RejectedException(MonitorException):
     """
     :说明:
 
-      指示 NoneBot 结束当前 ``Handler`` 并等待下一条消息后重新运行当前 ``Handler``。
+      指示 Monitor 结束当前 ``Handler`` 并等待下一条消息后重新运行当前 ``Handler``。
       可用于用户重新输入。
 
     :用法:
@@ -93,7 +93,7 @@ class FinishedException(MonitorException):
     """
     :说明:
 
-      指示 NoneBot 结束当前 ``Handler`` 且后续 ``Handler`` 不再被运行。
+      指示 Monitor 结束当前 ``Handler`` 且后续 ``Handler`` 不再被运行。
       可用于结束用户会话。
 
     :用法:

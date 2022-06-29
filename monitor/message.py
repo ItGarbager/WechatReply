@@ -11,10 +11,11 @@ from typing import Set, Type, TYPE_CHECKING
 from .exception import IgnoredException, StopPropagation
 from .logger import logger
 from .matcher import matchers, Matcher
+from .rule import TrieRule
 from .typing import T_EventPreProcessor, T_RunPreProcessor, T_EventPostProcessor, T_RunPostProcessor, T_State
 
 if TYPE_CHECKING:
-    from .classes import Message
+    from classes import Message
 
 _event_preprocessors: Set[T_EventPreProcessor] = set()
 _event_postprocessors: Set[T_EventPostProcessor] = set()
@@ -187,6 +188,8 @@ async def handle_event(message: "Message"):
                 "<r><bg #f8bbd0>Error when running EventPreProcessors. "
                 "Event ignored!</bg #f8bbd0></r>")
             return
+    # Trie Match
+    _, _ = TrieRule.get_value(message, state)
 
     break_flag = False
 

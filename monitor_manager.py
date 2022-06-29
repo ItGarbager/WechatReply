@@ -5,11 +5,10 @@ import time
 
 from websocket import create_connection
 
-from monitor.classes import Message
+from classes import Message
 from monitor.logger import logger
 from monitor.message import handle_event
 from monitor.plugin import load_plugins, load_builtin_plugin
-# from wechat import Message
 from wechat.tasks.schedulers import scheduler
 
 

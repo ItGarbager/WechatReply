@@ -6,12 +6,12 @@ from typing import Type, List, Dict, Union, Callable, Optional, TYPE_CHECKING, N
 
 from monitor.exception import StopPropagation, FinishedException, PausedException, RejectedException
 from monitor.logger import logger
-from .classes import Message
+from classes import Message
 from .rule import Rule
 from .typing import T_Handler, T_State, T_StateFactory, T_ArgsParser, T_TypeUpdater
 
 if TYPE_CHECKING:
-    from .classes import Message
+    from classes import Message
 
 matchers: Dict[int, List[Type["Matcher"]]] = defaultdict(list)
 """
@@ -257,7 +257,7 @@ class Matcher(metaclass=MatcherMeta):
         """
         :说明:
 
-          装饰一个函数来指示 NoneBot 在接收用户新的一条消息后继续运行该函数
+          装饰一个函数来指示 Monitor 在接收用户新的一条消息后继续运行该函数
 
         :参数:
 
@@ -297,7 +297,7 @@ class Matcher(metaclass=MatcherMeta):
         """
         :说明:
 
-          装饰一个函数来指示 NoneBot 当要获取的 ``key`` 不存在时接收用户新的一条消息并经过 ``ArgsParser`` 处理后再运行该函数，如果 ``key`` 已存在则直接继续运行
+          装饰一个函数来指示 Monitor 当要获取的 ``key`` 不存在时接收用户新的一条消息并经过 ``ArgsParser`` 处理后再运行该函数，如果 ``key`` 已存在则直接继续运行
 
         :参数:
 
@@ -315,7 +315,7 @@ class Matcher(metaclass=MatcherMeta):
                         await message.wx.send_text(friend, prompt.format(**state))
                     elif isinstance(prompt, Message):
                         friend = prompt.group or prompt.user
-                        await message.wx.send_text(friend, prompt)
+                        await message.wx.send_text(friend, prompt.msg.format(**state))
                     else:
                         logger.warning("Unknown prompt type, ignored.")
                 raise PausedException
@@ -392,6 +392,8 @@ class Matcher(metaclass=MatcherMeta):
             _message, friend = None, None
         if _message and friend:
             await message.wx.send_text(friend, _message, **kwargs)
+        else:
+            raise FinishedException
 
     @classmethod
     async def finish(cls,
@@ -475,7 +477,6 @@ class Matcher(metaclass=MatcherMeta):
 
     # 运行handlers
     async def run(self, message: "Message", state: T_State):
-        # global handler
         m_g = current_message.set(message)
         try:
             # Refresh preprocess state
