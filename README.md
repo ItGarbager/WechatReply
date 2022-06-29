@@ -67,7 +67,7 @@ hello = on_keyword(keywords={'hello', '你好', '早'}, priority=2, block=True)
 async def hello(message):
     if message.group:
         # 两种回复方式 handle.finish 发送后直接结束当前响应器
-        await message.wx.send_text(message.group, '你好')
+        message.wx.send_text(message.group, '你好')
         # await hello.finish('你好')
     else:
         # message.wx.send_text(message.user, 'hello')
