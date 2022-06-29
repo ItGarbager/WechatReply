@@ -5,9 +5,8 @@ FrontMatter:
 """
 import inspect
 import re
-from argparse import ArgumentParser
 from types import ModuleType
-from typing import Any, Set, Dict, List, Type, Tuple, Union, Optional
+from typing import Set, List, Type, Tuple, Union, Optional
 
 from .manager import _current_plugin
 from ..dependencies import Dependent
@@ -21,7 +20,7 @@ from ..rule import (
     startswith,
     full_match,
 )
-from ..typing import T_Handler, T_RuleChecker
+from ..typing import T_Handler, T_RuleChecker, T_State, T_StateFactory
 
 
 def _store_matcher(matcher: Type[Matcher]) -> None:
@@ -50,6 +49,8 @@ def on(
         temp: bool = False,
         priority: int = 1,
         block: bool = False,
+        state: Optional[T_State] = None,
+        state_factory: Optional[T_StateFactory] = None,
         _depth: int = 0,
 ) -> Type[Matcher]:
     """
@@ -61,6 +62,10 @@ def on(
         temp: 是否为临时事件响应器（仅执行一次）
         priority: 事件响应器优先级
         block: 是否阻止事件向更低优先级传递
+        state: 默认 state
+        state_factory: 默认 state 的工厂函数
+    返回:
+        Type[Matcher]
     """
     matcher = Matcher.new(
         type,
@@ -69,6 +74,8 @@ def on(
         priority=priority,
         block=block,
         handlers=handlers,
+        default_state=state,
+        default_state_factory=state_factory,
         module=_get_matcher_module(_depth + 1),
     )
     _store_matcher(matcher)
@@ -82,6 +89,8 @@ def on_message(
         temp: bool = False,
         priority: int = 1,
         block: bool = True,
+        state: Optional[T_State] = None,
+        state_factory: Optional[T_StateFactory] = None,
         _depth: int = 0,
 ) -> Type[Matcher]:
     """
@@ -92,6 +101,10 @@ def on_message(
         temp: 是否为临时事件响应器（仅执行一次）
         priority: 事件响应器优先级
         block: 是否阻止事件向更低优先级传递
+        state: 默认 state
+        state_factory: 默认 state 的工厂函数
+    返回:
+        Type[Matcher]
     """
     matcher = Matcher.new(
         "message",
@@ -100,6 +113,8 @@ def on_message(
         priority=priority,
         block=block,
         handlers=handlers,
+        default_state=state,
+        default_state_factory=state_factory,
         module=_get_matcher_module(_depth + 1),
     )
     _store_matcher(matcher)
@@ -126,6 +141,10 @@ def on_startswith(
         temp: 是否为临时事件响应器（仅执行一次）
         priority: 事件响应器优先级
         block: 是否阻止事件向更低优先级传递
+        state: 默认 state
+        state_factory: 默认 state 的工厂函数
+    返回:
+        Type[Matcher]
     """
     return on_message(startswith(chat_type, msg, ignore_case) & rule, **kwargs, _depth=_depth + 1)
 
@@ -149,6 +168,10 @@ def on_endswith(
         temp: 是否为临时事件响应器（仅执行一次）
         priority: 事件响应器优先级
         block: 是否阻止事件向更低优先级传递
+        state: 默认 state
+        state_factory: 默认 state 的工厂函数
+    返回:
+        Type[Matcher]
     """
     return on_message(endswith(chat_type, msg, ignore_case) & rule, **kwargs, _depth=_depth + 1)
 
@@ -172,6 +195,10 @@ def on_full_match(
         temp: 是否为临时事件响应器（仅执行一次）
         priority: 事件响应器优先级
         block: 是否阻止事件向更低优先级传递
+        state: 默认 state
+        state_factory: 默认 state 的工厂函数
+    返回:
+        Type[Matcher]
     """
     return on_message(full_match(chat_type, msg, ignore_case) & rule, **kwargs, _depth=_depth + 1)
 
@@ -195,6 +222,10 @@ def on_keyword(
         temp: 是否为临时事件响应器（仅执行一次）
         priority: 事件响应器优先级
         block: 是否阻止事件向更低优先级传递
+        state: 默认 state
+        state_factory: 默认 state 的工厂函数
+    返回:
+        Type[Matcher]
     """
     return on_message(keyword(chat_type, *keywords, _any=_any) & rule, **kwargs, _depth=_depth + 1)
 
@@ -219,6 +250,10 @@ def on_command(
         temp: 是否为临时事件响应器（仅执行一次）
         priority: 事件响应器优先级
         block: 是否阻止事件向更低优先级传递
+        state: 默认 state
+        state_factory: 默认 state 的工厂函数
+    返回:
+        Type[Matcher]
     """
 
     commands = set([cmd]) | (aliases or set())

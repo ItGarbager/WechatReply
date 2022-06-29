@@ -72,7 +72,7 @@ def load_from_json(file_path: str, encoding: str = "utf-8") -> Set[Plugin]:
 
 
 def load_builtin_plugin(name: str) -> Optional[Plugin]:
-    """导入 WechatBot 内置插件。
+    """导入 Monitor 内置插件。
     参数:
         name: 插件名称
     """
@@ -80,7 +80,7 @@ def load_builtin_plugin(name: str) -> Optional[Plugin]:
 
 
 def load_builtin_plugins(*plugins: str) -> Set[Plugin]:
-    """导入多个 WechatBot 内置插件。
+    """导入多个 Monitor 内置插件。
     参数:
         plugin: 插件名称列表
     """

@@ -4,18 +4,21 @@
 
 每个事件响应器 ``Matcher`` 拥有一个匹配规则 ``Rule`` ，其中是 **异步** ``RuleChecker`` 的集合，只有当所有 ``RuleChecker`` 检查结果为 ``True`` 时继续运行。
 
-\:\:\:tip 提示
+:::tip 提示
 ``RuleChecker`` 既可以是 async function 也可以是 sync function，但在最终会被 ``wechat_bot.utils.run_sync`` 转换为 async function
-\:\:\:
+:::
 """
 
 import asyncio
 import re
-from typing import Union, Optional, Callable, NoReturn, Awaitable, Tuple, Set
+from typing import Union, Optional, Callable, NoReturn, Awaitable, Tuple, Set, TYPE_CHECKING
 
-from .typing import T_RuleChecker
-from .utils import run_sync
 from .config import CMD_SEP, CMD_START
+from .typing import T_RuleChecker, T_State
+from .utils import run_sync
+
+if TYPE_CHECKING:
+    from .classes import Message
 
 
 class Rule:
@@ -36,7 +39,7 @@ class Rule:
     __slots__ = ("checkers",)
 
     def __init__(
-            self, *checkers: Callable[["Message"],
+            self, *checkers: Callable[["Message", T_State],
                                       Awaitable[bool]]) -> None:
         """
         异步 RuleChecker
@@ -54,7 +57,7 @@ class Rule:
           * ``Set[Callable[[Bot, Event, T_State], Awaitable[bool]]]``
         """
 
-    async def __call__(self, message) -> bool:
+    async def __call__(self, message, state: T_State) -> bool:
         """
         检查是否符合所有规则
         :param message: 消息对象
@@ -62,7 +65,7 @@ class Rule:
         """
 
         results = await asyncio.gather(
-            *map(lambda c: c(message), self.checkers))
+            *map(lambda c: c(message, state), self.checkers))
 
         return all(results)
 
@@ -102,7 +105,7 @@ def startswith(chat_type: Union[str, None], msg: str, ignore_case: bool) -> Rule
     :return: Rule
     """
 
-    async def _startswith(message: "Message") -> bool:
+    async def _startswith(message: "Message", state: T_State) -> bool:
         if not check_type(chat_type, message):
             return False
         return (message.msg.casefold() if ignore_case else message.msg).startswith(msg)
@@ -119,7 +122,7 @@ def endswith(chat_type: Union[str, None], msg: str, ignore_case: bool) -> Rule:
     :return: Rule
     """
 
-    async def _endswith(message: "Message") -> bool:
+    async def _endswith(message: "Message", state: T_State) -> bool:
         if not check_type(chat_type, message):
             return False
         return (message.msg.casefold() if ignore_case else message.msg).endswith(msg)
@@ -138,7 +141,7 @@ def full_match(chat_type: Union[str, None], msg: Union[str, Tuple[str, ...]], ig
     if isinstance(msg, str):
         msg = (msg,)
 
-    async def _full_match(message: "Message") -> bool:
+    async def _full_match(message: "Message", state: T_State) -> bool:
         if not check_type(chat_type, message):
             return False
 
@@ -159,7 +162,7 @@ def keyword(chat_type: Union[str, None], *keywords: Set, _any=True) -> Rule:
     :return: 
     """
 
-    async def _keyword(message: "Message") -> bool:
+    async def _keyword(message: "Message", state: T_State) -> bool:
         if not check_type(chat_type, message):
             return False
 
@@ -195,7 +198,7 @@ def command(chat_type: Union[str, None], *cmds: Union[str, Tuple[str, ...]]) -> 
     :return: 
     """
 
-    async def _command(message: "Message") -> bool:
+    async def _command(message: "Message", state: T_State) -> bool:
         if not check_type(chat_type, message):
             return False
         now_cmds = sorted(cmds, key=len, reverse=True)
@@ -233,7 +236,7 @@ def regex(chat_type: Union[str, None], pattern: str, flags: Union[int, re.RegexF
 
     pattern = re.compile(pattern, flags)
 
-    async def _regex(message: "Message") -> bool:
+    async def _regex(message: "Message", state: T_State) -> bool:
         if not check_type(chat_type, message):
             return False
 

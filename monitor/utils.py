@@ -1,4 +1,4 @@
-"""本模块包含了 WechatBot 的一些工具函数
+"""本模块包含了 Monitor 的一些工具函数
 FrontMatter:
     sidebar_position: 8
     description: wechat_bot.utils 模块

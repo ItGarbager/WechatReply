@@ -1,24 +1,22 @@
 from monitor.plugin.on import on_keyword
-from wechat import Message
 
 # priority 为优先级，数值越低优先级越高，block 是否阻断消息继续传递，默认 True，为 False 时还需继续传递至下一层事件处理
-hello = on_keyword(keywords={'hello', '你好', '早'}, priority=2, block=False)
+weather = on_keyword(keywords={'天气'}, priority=2, block=True)
 
 
-@hello.handle()
-async def hello(message: Message):
-    if message.group:
-        message.wx.send_text(message.group, '你好')
-    else:
-        message.wx.send_text(message.user, 'hello')
+@weather.handle()
+async def handle_first_receive(message, state):
+    pass
 
 
-hello2 = on_keyword(keywords={'hello', '你好', '早'}, priority=1)
+@weather.got("city", prompt="你想查询哪个城市的天气呢？")
+async def handle_city(message, state):
+    city = state["city"]
+    if city not in ["上海", "北京"]:
+        await weather.reject("你想查询的城市暂不支持，请重新输入！")
+    city_weather = await get_weather(city)
+    await weather.finish(city_weather)
 
 
-@hello2.handle()
-async def hello2(message: Message):
-    if message.group:
-        message.wx.send_text(message.group, '你好2')
-    else:
-        message.wx.send_text(message.user, 'hello2')
+async def get_weather(city: str):
+    return f"{city}的天气是..."

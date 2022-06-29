@@ -5,10 +5,11 @@ import time
 
 from websocket import create_connection
 
+from monitor.classes import Message
 from monitor.logger import logger
 from monitor.message import handle_event
 from monitor.plugin import load_plugins, load_builtin_plugin
-from wechat import Message
+# from wechat import Message
 from wechat.tasks.schedulers import scheduler
 
 
@@ -62,8 +63,9 @@ class Client:
         })
         self.ws.send(message)
 
-    def send_text(self, *args, **kwargs):
-        return self.send('send_text', *args, **kwargs)
+    async def send_text(self, *args, **kwargs):
+        self.send('send_text', *args, **kwargs)
+        return 1
 
     def start(self):
         threading.Thread(target=self.get_recv, args=()).start()

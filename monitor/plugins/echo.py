@@ -6,5 +6,4 @@ ping = on_full_match(msg=('ping',), priority=1, block=True)
 
 @ping.handle()
 async def _(message):
-    friend = message.group or message.user
-    message.wx.send_text(friend, 'pong!')
+    await ping.finish('hello')

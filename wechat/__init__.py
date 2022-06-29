@@ -88,3 +88,6 @@ class Message:
         self.user = user
         self.msg = msg
         self.wx = wx
+
+    def get_message(self):
+        return self.msg

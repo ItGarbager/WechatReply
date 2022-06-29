@@ -1,5 +1,5 @@
-"""本模块定义了 WechatBot 的日志记录 Logger。
-WechatBot 使用 [`loguru`][loguru] 来记录日志信息。
+"""本模块定义了 Monitor 的日志记录 Logger。
+Monitor 使用 [`loguru`][loguru] 来记录日志信息。
 自定义 logger 请参考 [自定义日志](https://v2.wechat_bot.dev/docs/tutorial/custom-logger)
 以及 [`loguru`][loguru] 文档。
 [loguru]: https://github.com/Delgan/loguru
@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 # logger = logging.getLogger("wechat_bot")
 logger: "Logger" = loguru.logger
-"""WechatBot 日志记录器对象。
+"""Monitor 日志记录器对象。
 默认信息:
 - 格式: `[%(asctime)s %(name)s] %(levelname)s: %(message)s`
 - 等级: `INFO` ，根据 `config.log_level` 配置改变

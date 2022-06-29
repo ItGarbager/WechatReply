@@ -1,6 +1,5 @@
 from re import split
 
-from wechat import Message
 from monitor.plugin import on_command
 from wechat.tasks.schedulers import add_task
 
@@ -15,7 +14,7 @@ task_map_dict = {
 
 
 @schedule.handle()
-async def _(message: Message):
+async def _(message):
     command = message.data.get('command')
     if command:
         prefix = command.get('prefix')
@@ -27,14 +26,14 @@ async def _(message: Message):
             if call:
                 if ':' in date and date.replace(':', '').isdigit():
                     hour, minute = split(r'[:：]', date)
-                    message.wx.send_text(friend, '定时任务添加成功')
+                    await message.wx.send_text(friend, '定时任务添加成功')
                     if send_friend == '-':
                         send_friend = friend
                     add_task(task_map_dict[call], hour, minute, *(message.wx, send_friend, msg))
                 else:
-                    message.wx.send_text(friend, '时间格式异常')
+                    await message.wx.send_text(friend, '时间格式异常')
             else:
-                message.wx.send_text(friend, '任务类型不存在')
+                await message.wx.send_text(friend, '任务类型不存在')
         else:
-            message.wx.send_text(friend, '命令格式错误，格式示例:\n'
+            await message.wx.send_text(friend, '命令格式错误，格式示例:\n'
                                          f'{prefix} 发送文本消息(添加任务类型) 10:10(时间，时:分) xxxxx_yyyy(通讯录id) 发送消息')

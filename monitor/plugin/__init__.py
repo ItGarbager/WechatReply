@@ -1,4 +1,4 @@
-"""本模块为 WechatBot 插件开发提供便携的定义函数。
+"""本模块为 Monitor 插件开发提供便携的定义函数。
 ## 快捷导入
 为方便使用，本模块从子模块导入了部分内容，以下内容可以直接通过本模块导入:
 - `monitor` => {ref}``monitor` <monitor.plugin.monitor.monitor>`

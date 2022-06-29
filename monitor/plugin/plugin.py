@@ -35,7 +35,7 @@ class Plugin:
     """存储插件信息"""
 
     name: str
-    """插件索引标识，WechatBot 使用 文件/文件夹 名称作为标识符"""
+    """插件索引标识，Monitor 使用 文件/文件夹 名称作为标识符"""
     module: ModuleType
     """插件模块对象"""
     module_name: str

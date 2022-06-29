@@ -2,16 +2,19 @@
 事件处理
 ========
 
-WechatBot 内部处理并按优先级分发事件给所有事件响应器，提供了多个插槽以进行事件的预处理等。
+Monitor 内部处理并按优先级分发事件给所有事件响应器，提供了多个插槽以进行事件的预处理等。
 """
 
 import asyncio
-from typing import Set, Type
+from typing import Set, Type, TYPE_CHECKING
 
 from .exception import IgnoredException, StopPropagation
 from .logger import logger
 from .matcher import matchers, Matcher
-from .typing import T_EventPreProcessor, T_RunPreProcessor, T_EventPostProcessor, T_RunPostProcessor
+from .typing import T_EventPreProcessor, T_RunPreProcessor, T_EventPostProcessor, T_RunPostProcessor, T_State
+
+if TYPE_CHECKING:
+    from .classes import Message
 
 _event_preprocessors: Set[T_EventPreProcessor] = set()
 _event_postprocessors: Set[T_EventPostProcessor] = set()
@@ -94,10 +97,9 @@ def run_postprocessor(func: T_RunPostProcessor) -> T_RunPostProcessor:
     return func
 
 
-async def _check_matcher(priority: int, Matcher: Type[Matcher], message: "Message") -> None:
+async def _check_matcher(priority: int, Matcher: Type[Matcher], message: "Message", state: T_State) -> None:
     try:
-
-        if not await Matcher.check_rule(message):
+        if not await Matcher.check_rule(message, state):
             return
     except Exception as e:
         logger.opt(colors=True, exception=e).error(
@@ -110,16 +112,16 @@ async def _check_matcher(priority: int, Matcher: Type[Matcher], message: "Messag
         except Exception:
             pass
 
-    await _run_matcher(Matcher, message)
+    await _run_matcher(Matcher, message, state)
 
 
-async def _run_matcher(Matcher: Type[Matcher], message: "Message") -> None:
+async def _run_matcher(Matcher: Type[Matcher], message: "Message", state: T_State) -> None:
     logger.info(f"Event will be handled by {Matcher}")
 
     matcher = Matcher()
 
     coros = list(
-        map(lambda x: x(matcher, message), _run_preprocessors))
+        map(lambda x: x(matcher, message, state), _run_preprocessors))
     if coros:
         try:
             await asyncio.gather(*coros)
@@ -137,7 +139,7 @@ async def _run_matcher(Matcher: Type[Matcher], message: "Message") -> None:
 
     try:
         logger.debug(f"Running matcher {matcher}")
-        await matcher.run(message)
+        await matcher.run(message, state)
     except Exception as e:
         logger.opt(colors=True, exception=e).error(
             f"<r><bg #f8bbd0>Running matcher {matcher} failed.</bg #f8bbd0></r>"
@@ -145,7 +147,7 @@ async def _run_matcher(Matcher: Type[Matcher], message: "Message") -> None:
         exception = e
 
     coros = list(
-        map(lambda x: x(matcher, exception, message),
+        map(lambda x: x(matcher, exception, message, state),
             _run_postprocessors))
     if coros:
         try:
@@ -172,6 +174,20 @@ async def handle_event(message: "Message"):
         asyncio.create_task(handle_event(bot, event))
 
     """
+    state = {}
+    coros = list(map(lambda x: x(message, state), _event_preprocessors))
+    if coros:
+        try:
+            logger.debug("Running PreProcessors...")
+            await asyncio.gather(*coros)
+        except IgnoredException:
+            return
+        except Exception as e:
+            logger.opt(colors=True, exception=e).error(
+                "<r><bg #f8bbd0>Error when running EventPreProcessors. "
+                "Event ignored!</bg #f8bbd0></r>")
+            return
+
     break_flag = False
 
     for priority in sorted(matchers.keys()):
@@ -180,7 +196,7 @@ async def handle_event(message: "Message"):
             break
 
         pending_tasks = [
-            _check_matcher(priority, matcher, message)
+            _check_matcher(priority, matcher, message, state)
             for matcher in matchers[priority]
         ]
         results = await asyncio.gather(*pending_tasks, return_exceptions=True)
@@ -190,3 +206,13 @@ async def handle_event(message: "Message"):
                 if not break_flag:
                     break_flag = True
                     logger.debug("Stop event propagation")
+
+    coros = list(map(lambda x: x(message, state), _event_postprocessors))
+    if coros:
+        try:
+            logger.debug("Running PostProcessors...")
+            await asyncio.gather(*coros)
+        except Exception as e:
+            logger.opt(colors=True, exception=e).error(
+                "<r><bg #f8bbd0>Error when running EventPostProcessors</bg #f8bbd0></r>"
+            )
