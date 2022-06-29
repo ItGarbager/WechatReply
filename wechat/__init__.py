@@ -4,6 +4,7 @@ import traceback
 
 from WechatPCAPI import WechatPCAPI
 
+from classes import Message
 from monitor.logger import logger
 from monitor.message import handle_event
 from wechat.config import START_TIME
@@ -78,16 +79,3 @@ class WX:
 
     def send_text(self, *args, **kwargs):
         self.wx.send_text(*args, **kwargs)
-
-
-class Message:
-    def __init__(self, data, chat_type, group, user, msg, wx=None):
-        self.data = data
-        self.chat_type = chat_type
-        self.group = group
-        self.user = user
-        self.msg = msg
-        self.wx = wx
-
-    def get_message(self):
-        return self.msg
