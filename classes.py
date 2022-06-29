@@ -1,4 +1,4 @@
-from config import CMD_SEP
+import re
 
 
 class Message:
@@ -20,4 +20,4 @@ class Message:
 
     def strip(self, state):
         args = str(self.msg).lstrip(state['_prefix']['raw_command']).strip()
-        return args.split(' ')[0]
+        return re.split(r'[\s]+', args)

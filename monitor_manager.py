@@ -62,9 +62,8 @@ class Client:
         })
         self.ws.send(message)
 
-    async def send_text(self, *args, **kwargs):
+    def send_text(self, *args, **kwargs):
         self.send('send_text', *args, **kwargs)
-        return 1
 
     def start(self):
         threading.Thread(target=self.get_recv, args=()).start()

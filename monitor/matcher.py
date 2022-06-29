@@ -312,10 +312,10 @@ class Matcher(metaclass=MatcherMeta):
                 if prompt:
                     if isinstance(prompt, str):
                         friend = message.group or message.user
-                        await message.wx.send_text(friend, prompt.format(**state))
+                        message.wx.send_text(friend, prompt.format(**state))
                     elif isinstance(prompt, Message):
                         friend = prompt.group or prompt.user
-                        await message.wx.send_text(friend, prompt.msg.format(**state))
+                        message.wx.send_text(friend, prompt.msg.format(**state))
                     else:
                         logger.warning("Unknown prompt type, ignored.")
                 raise PausedException
@@ -391,7 +391,7 @@ class Matcher(metaclass=MatcherMeta):
         else:
             _message, friend = None, None
         if _message and friend:
-            await message.wx.send_text(friend, _message, **kwargs)
+            message.wx.send_text(friend, _message, **kwargs)
         else:
             raise FinishedException
 
