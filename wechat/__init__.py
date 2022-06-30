@@ -65,8 +65,8 @@ def local_on_message(message):
 
 @singleton
 class WX:
-    def __init__(self, on_message=local_on_message):
-        self.wx = WechatPCAPI(on_message=on_message, log=logger)
+    def __init__(self, on_message=local_on_message, on_wx_exit_handle=exit, log=logger):
+        self.wx = WechatPCAPI(on_message=on_message, on_wx_exit_handle=on_wx_exit_handle, log=log)
 
     def start(self):
         self.wx.start_wechat(block=True)
@@ -79,3 +79,21 @@ class WX:
 
     def send_text(self, *args, **kwargs):
         self.wx.send_text(*args, **kwargs)
+
+    def send_card(self, *args, **kwargs):
+        self.wx.send_card(*args, **kwargs)
+
+    def send_file(self, *args, **kwargs):
+        self.wx.send_file(*args, **kwargs)
+
+    def send_gif(self, *args, **kwargs):
+        self.wx.send_gif(*args, **kwargs)
+
+    def send_img(self, *args, **kwargs):
+        self.wx.send_img(*args, **kwargs)
+
+    def send_link_card(self, *args, **kwargs):
+        self.wx.send_link_card(*args, **kwargs)
+
+    def get_member_of_chatroom(self, *args, **kwargs):
+        self.wx.get_member_of_chatroom(*args, **kwargs)
