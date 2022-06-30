@@ -33,3 +33,20 @@ def global_response(data=None, status=None, msg=None):
         'timestamp': int(time.time())
     }
     return jsonify(data), status
+
+
+def get_param(request):
+    """获取 Flask 请求参数, POST GET"""
+    if request.method == 'POST':
+        content_type = request.headers.get('Content-Type')
+        if content_type == 'application/json':
+            json_data = request.json
+
+        elif 'form-data' in content_type:
+            json_data = request.form
+
+        else:
+            return False, global_response(status=400)
+    else:
+        json_data = request.args
+    return True, json_data

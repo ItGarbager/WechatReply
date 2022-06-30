@@ -2,21 +2,14 @@ import json
 
 from flask import views, request, Response, stream_with_context
 
-from web.http.utils import global_response
+from web.http.utils import global_response, get_param
 from wechat import WXFriend, WX
 
 
 def send_text_msg():
-    content_type = request.headers.get('Content-Type')
-    if content_type == 'application/json':
-        json_data = request.json
-
-    elif 'form-data' in content_type:
-        json_data = request.form
-
-    else:
-        return global_response(status=400)
-
+    success, json_data = get_param(request)
+    if not success:
+        return json_data
     msg = json_data.get('msg')
     friend_id = json_data.get('friend_id')
     if msg:
@@ -33,15 +26,9 @@ class GetInfo(views.MethodView):
         return global_response(data=getattr(WXFriend, friend_type), msg='Get Friends\'s Info Success')
 
     def post(self, friend_type):
-        content_type = request.headers.get('Content-Type')
-        if content_type == 'application/json':
-            json_data = request.json
-
-        elif 'form-data' in content_type:
-            json_data = request.form
-
-        else:
-            return global_response(status=400)
+        success, json_data = get_param(request)
+        if not success:
+            return json_data
         name = json_data.get('name')
         type_ = json_data.get('type_')
         if name:
@@ -67,3 +54,21 @@ class GetInfo(views.MethodView):
             return Response(stream_with_context(stream()), mimetype='application/json')
         else:
             return global_response(data={}, msg='Get ({})\'s Info Failed'.format(name))
+
+
+class CallBackWechat(views.MethodView):
+    """微信接口回调函数"""
+    # 可省略
+    methods = ["POST"]
+
+    def post(self, function):
+        success, json_data = get_param(request)
+        if not success:
+            return json_data
+        if hasattr(WX(), function):
+            function = getattr(WX(), function)
+            res = function(**json_data)
+            print(res)
+            if res:
+                return global_response(data=res)
+        return global_response()
