@@ -58,13 +58,11 @@ class UpdateWebSocket(tornado.websocket.WebSocketHandler, ABC):
 
     @classmethod
     def send_message(cls, message):
-        asyncio.set_event_loop(asyncio.new_event_loop())
-
         """
-                这是消息回调函数，所有的返回消息都在这里接收，建议异步处理，防止阻塞
-                :param message: 回调消息
-                :return:
-                """
+        这是消息回调函数，所有的返回消息都在这里接收，建议异步处理，防止阻塞
+        :param message: 回调消息
+        :return:
+        """
         try:
             res = get_friends(message, WXFriend=WXFriend)
 
