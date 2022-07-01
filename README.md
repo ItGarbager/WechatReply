@@ -30,15 +30,19 @@ pip install -r requirements.txt
 > python one_click_manager.py
 2. 执行微信与监听服务进行分离的版本
 - 一键全部启动
-> .\debug.bat 或者 .\debug.bat startup
+> .\debug.bat 或者 .\debug.bat startup 或者 .\debug.bat startup all
 - 启动单个服务
 > .\debug.bat startup monitor (监听服务) 或者 .\debug.bat startup web (微信以及web服务)
 #### 服务关闭
 - 关闭所有服务
-> .\debug.bat shutdown
+> .\debug.bat shutdown 或者 .\debug.bat shutdown all
 - 关闭单个服务
 > .\debug.bat shutdown monitor (监听服务) 或者 .\debug.bat shutdown web (微信以及web服务)
-
+#### 服务重启
+- 重启所有服务
+> .\debug.bat restart 或者 .\debug.bat restart all
+- 重启单个服务
+> .\debug.bat restart monitor (监听服务) 或者 .\debug.bat restart web (微信以及web服务)
 
 ### 插件
 默认自定义插件目录 [wechat/plugins](wechat/plugins)
@@ -49,7 +53,7 @@ pip install -r requirements.txt
 
 ```python
 # wechat/plugin/hello.py
-from monitor.plugin.on import on_keyword  # 导入关键词类型事件响应器
+from monitor.plugin.on import on_keyword, on_command  # 导入关键词类型事件响应器
 
 """
 on_keyword 功能，匹配消息关键词
@@ -71,6 +75,8 @@ async def hello(message):
     else:
         # message.wx.send_text(message.user, 'hello')
         await hello.finish('hello')
+
+
 
 ```
 
