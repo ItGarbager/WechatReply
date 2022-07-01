@@ -20,31 +20,51 @@
 - 使用 ws 进行消息通信，分离微信登录与监听回调服务
 
 ### 依赖安装
+
 ```bash
 pip install -r requirements.txt
 ```
 
 ### 启动及关闭服务
+
 #### 服务启动
+
 1. 执行微信与监听服务不进行分离的版本
+
 > python one_click_manager.py
+
 2. 执行微信与监听服务进行分离的版本
+
 - 一键全部启动
+
 > .\debug.bat 或者 .\debug.bat startup 或者 .\debug.bat startup all
+
 - 启动单个服务
+
 > .\debug.bat startup monitor (监听服务) 或者 .\debug.bat startup web (微信以及web服务)
+
 #### 服务关闭
+
 - 关闭所有服务
+
 > .\debug.bat shutdown 或者 .\debug.bat shutdown all
+
 - 关闭单个服务
+
 > .\debug.bat shutdown monitor (监听服务) 或者 .\debug.bat shutdown web (微信以及web服务)
+
 #### 服务重启
+
 - 重启所有服务
+
 > .\debug.bat restart 或者 .\debug.bat restart all
+
 - 重启单个服务
+
 > .\debug.bat restart monitor (监听服务) 或者 .\debug.bat restart web (微信以及web服务)
 
 ### 插件
+
 默认自定义插件目录 [wechat/plugins](wechat/plugins)
 
 当前 monitor 包中已经实现了插件自行注册，我们可以自行扩展插件
@@ -53,7 +73,7 @@ pip install -r requirements.txt
 
 ```python
 # wechat/plugin/hello.py
-from monitor.plugin.on import on_keyword, on_command  # 导入关键词类型事件响应器
+from monitor.plugin.on import on_keyword  # 导入关键词类型事件响应器
 
 """
 on_keyword 功能，匹配消息关键词
@@ -77,16 +97,49 @@ async def hello(message):
         await hello.finish('hello')
 
 
+# wechat/plugin/weather.py
+import random
+from monitor.plugin.on import on_command
 
+weather = on_command("天气", priority=2, block=True)
+
+
+@weather.handle()
+async def handle_first_receive(message, state):
+    args = message.strip(state)
+    if args:
+        state["city"], state["time"] = args  # 如果用户发送了参数则直接赋值
+
+
+# got 获取参数的值，prompt 为查询不到该参数时自动回复的问题
+@weather.got("city", prompt="你想查询哪个城市的天气呢？")
+async def handle_city(message, state):
+    city = state["city"]  # got 回复会存储到当前state中
+    if city not in ["上海", "北京"]:
+        # reject 发送一条消息给当前交互用户并暂停事件响应器，在接收用户新的一条消息后重新运行当前处理函数
+        await weather.reject("你想查询的城市暂不支持，请重新输入！")
+
+
+# got 获取参数的值，prompt 为查询不到该参数时自动回复的问题
+@weather.got("time", prompt="你想查询几号的？")
+async def handle_time(message, state):
+    time = state["time"]
+    city = state["city"]
+    city_weather = await get_weather(city, time)
+    await weather.finish(city_weather)
+
+
+async def get_weather(city: str, time: str):
+    _weather = random.choice(['晴天', '雨天', '多云', '大风'])
+    return f"{city}{time}的天气是{_weather}"
 ```
 
 以上插件我们编写完毕后，存入插件目录，服务会在启动时自行加载
-
 
 ### 定时任务
 
 当前定时任务存放于 [wechat/tasks](wechat/tasks) 目录中，当前使用 [apscheduler](https://apscheduler.readthedocs.io/en/3.x/) 实现，具体使用见文档。
 
-
 ### 可优化
+
 - [ ] 文本编码，发送小表情
