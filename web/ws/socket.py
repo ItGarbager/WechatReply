@@ -64,6 +64,8 @@ class UpdateWebSocket(tornado.websocket.WebSocketHandler, ABC):
         :return:
         """
         try:
+            asyncio.set_event_loop(asyncio.new_event_loop())
+
             res = get_friends(message, WXFriend=WXFriend)
 
             # 判断是否为通讯录消息
