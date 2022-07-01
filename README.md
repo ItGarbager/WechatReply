@@ -34,11 +34,10 @@ pip install -r requirements.txt
 - 启动单个服务
 > .\debug.bat startup monitor (监听服务) 或者 .\debug.bat startup web (微信以及web服务)
 #### 服务关闭
-关闭就直接杀的 python 和 wechat 的服务，若存在其他 python 应用请勿使用
 - 关闭所有服务
 > .\debug.bat shutdown
 - 关闭单个服务
-> .\debug.bat shutdown python 或者 .\debug.bat shutdown wechat
+> .\debug.bat shutdown monitor (监听服务) 或者 .\debug.bat shutdown web (微信以及web服务)
 
 
 ### 插件

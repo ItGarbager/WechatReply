@@ -1,12 +1,11 @@
 @echo off
-
 :: start service
-if "%1"=="startup" (
+if "%1" == "startup" (
     if "%2" == "" (
         start python web_manager.py
         start python monitor_manager.py
     ) else (
-        start python %2_manager.py
+        start python %2_manager.py & title=%2
     )
 ) else (
     if "%1"=="" (
@@ -14,17 +13,16 @@ if "%1"=="startup" (
         start python monitor_manager.py
     )
 )
-
 :: close service
-if "%1"=="shutdown" (
+if "%1" == "shutdown" (
     if "%2" == "" (
-        taskkill /F /IM python.exe
-        echo Closed all Python processes
-        taskkill /F /IM WeChat.exe
-        echo Closed all WeChat processes
+        wmic process where "commandline like 'python%%manager.py' or name='wechat.exe'" call terminate
     ) else (
-        taskkill /F /IM %2.exe
-        echo Closed all WeChat %2 processes
+        echo python %2_manager.py
+        wmic process where "commandline like 'python%%%2_manager.py'" call terminate
+        if "%2" == "web" (
+            wmic process where "name='wechat.exe'" call terminate
+        )
     )
 )
 
