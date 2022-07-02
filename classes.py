@@ -20,4 +20,6 @@ class Message:
 
     def strip(self, state):
         args = str(self.msg).lstrip(state['_prefix']['raw_command']).strip()
-        return re.split(r'[\s]+', args)
+        if args:
+            return re.split(r'[\s]+', args)
+        return []
