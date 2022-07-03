@@ -4,6 +4,7 @@ FrontMatter:
     description: wechat_bot.utils 模块
 """
 import asyncio
+import hashlib
 import inspect
 import re
 from functools import wraps, partial
@@ -102,3 +103,24 @@ def check_field_type(field: ModelField, value: V) -> V:
     if errs_:
         raise TypeMisMatch(field, value)
     return value
+
+
+def try_except(func):
+    @wraps(func)
+    async def wrapper(*args, **kwargs):
+        logger.info('异常处理')
+        message = kwargs.get('message')
+        try:
+            await func(*args, **kwargs)
+        except Exception as e:
+            if str(e):
+                if message:
+                    message.wx.send_text(message.group, f'Error:{e}')
+
+    return wrapper
+
+
+def MD5(code):
+    md5 = hashlib.md5()
+    md5.update(code.encode('utf-8'))
+    return md5.hexdigest()
