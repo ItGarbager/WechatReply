@@ -87,8 +87,8 @@ class UpdateWebSocket(tornado.websocket.WebSocketHandler, ABC):
                         logger.warning('haven\'t user_collections')
                     for collection in all_user_collections:
                         logger.info('collection %s' % id(collection))
-
-                        message = json.dumps(Message(data, chat_type, group, user, msg).__dict__)
+                        friend = group or user
+                        message = json.dumps(Message(data, chat_type, friend, group, user, msg).__dict__)
                         collection.write_message(message)
 
         except Exception:

@@ -2,9 +2,10 @@ import re
 
 
 class Message:
-    def __init__(self, data, chat_type, group, user, msg, wx=None):
+    def __init__(self, data, chat_type, friend, group, user, msg, wx=None):
         self.data = data
         self.chat_type = chat_type
+        self.friend = friend
         self.group = group
         self.user = user
         self.msg = msg
