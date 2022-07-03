@@ -6,8 +6,8 @@ test = on_regex(pattern=r'(.+)天气(.+)差')
 
 
 @test.handle()
-async def _(message):
-    pprint.pprint(message.data)
+async def _(message, state):
+    pprint.pprint(state)
 
 
 test2 = on_full_match(msg='必须全文匹配才能响应')
