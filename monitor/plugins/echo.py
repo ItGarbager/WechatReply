@@ -6,4 +6,4 @@ ping = on_full_match(msg=('ping',), priority=1, block=True)
 
 @ping.handle()
 async def _(message):
-    await ping.finish('hello')
+    await ping.finish('pong!')
