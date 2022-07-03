@@ -290,9 +290,9 @@ def regex(chat_type: Union[str, None], pattern: str, flags: Union[int, re.RegexF
     根据正则表达式进行匹配。
 
       可以通过 
-        message.data["_matched"] = matched.group()
-        message.data["_matched_groups"] = matched.groups()
-        message.data["_matched_dict"] = matched.groupdict()
+        state["_matched"] = matched.group()
+        state["_matched_groups"] = matched.groups()
+        state["_matched_dict"] = matched.groupdict()
       获取正则表达式匹配成功的文本。
     :param chat_type: 消息类型，chatroom|person, 不填两者都会监听
     :param pattern: 正则表达式
@@ -308,9 +308,9 @@ def regex(chat_type: Union[str, None], pattern: str, flags: Union[int, re.RegexF
 
         matched = pattern.search(message.msg)
         if matched:
-            message.data["_matched"] = matched.group()
-            message.data["_matched_groups"] = matched.groups()
-            message.data["_matched_dict"] = matched.groupdict()
+            state["_matched"] = matched.group()
+            state["_matched_groups"] = matched.groups()
+            state["_matched_dict"] = matched.groupdict()
             return True
         else:
             return False
