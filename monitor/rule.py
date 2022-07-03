@@ -16,7 +16,7 @@ from typing import Union, Optional, Callable, NoReturn, Awaitable, Tuple, Set, T
 
 from pygtrie import CharTrie
 
-from .config import CMD_SEP, CMD_START
+from .config import CMD_SEP, CMD_START, BOT_NAME
 from .logger import logger
 from .typing import T_RuleChecker, T_State
 from .utils import run_sync
@@ -316,3 +316,22 @@ def regex(chat_type: Union[str, None], pattern: str, flags: Union[int, re.RegexF
             return False
 
     return Rule(_regex)
+
+
+def to_me(chat_type: Union[str, None] = None) -> Rule:
+    """
+    :说明:
+      判断事件是否与机器人有关
+    :参数:
+      * 无
+    """
+
+    async def _to_me(message: "Message", state: T_State) -> bool:
+        if not check_type(chat_type, message):
+            return False
+        if message.chat_type == 'chatroom':
+            if not ('@' + BOT_NAME) in message.msg:
+                return False
+        return True
+
+    return Rule(_to_me)
