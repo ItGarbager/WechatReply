@@ -1,5 +1,6 @@
 import random
 
+from classes import Message
 from monitor.plugin.on import on_command
 
 # priority 为优先级，数值越低优先级越高，block 是否阻断消息继续传递，默认 True，为 False 时还需继续传递至下一层事件处理
@@ -7,10 +8,13 @@ weather = on_command("天气", priority=2, block=True)
 
 
 @weather.handle()
-async def handle_first_receive(message, state):
+async def handle_first_receive(message: Message, state):
     args = message.strip(state)
     if args:
-        state["city"], state["time"] = args  # 如果用户发送了参数则直接赋值
+        if len(args) == 2:
+            state["city"], state["time"] = args  # 如果用户发送了参数则直接赋值
+        else:
+            state['city'] = args[0]
 
 
 # got 获取参数的值，prompt 为查询不到该参数时自动回复的问题
