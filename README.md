@@ -108,7 +108,10 @@ weather = on_command("天气", priority=2, block=True)
 async def handle_first_receive(message, state):
     args = message.strip(state)
     if args:
-        state["city"], state["time"] = args  # 如果用户发送了参数则直接赋值
+        if len(args) == 2:
+            state["city"], state["time"] = args  # 如果用户发送了参数则直接赋值
+        else:
+            state['city'] = args[0]
 
 
 # got 获取参数的值，prompt 为查询不到该参数时自动回复的问题
