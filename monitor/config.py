@@ -1,5 +1,5 @@
 try:
-    from config import CMD_START, CMD_SEP, TULING_API_KEY, TULING_URL
+    from config import CMD_START, CMD_SEP, TULING_API_KEY, TULING_URL, BOT_NAME
 except ImportError:
     from .logger import logger
 
@@ -12,3 +12,5 @@ except ImportError:
     TULING_API_KEY = ''
     # TULING_URL
     TULING_URL = ''
+    # bot name
+    BOT_NAME = ''
